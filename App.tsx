@@ -10,22 +10,21 @@ import {
   Roboto_700Bold,
 } from "@expo-google-fonts/roboto";
 import { Loading } from "@components/Loading/loading";
-import { configThemeCustom } from "src/theme";
+import { SignIn } from "@screens/signin";
+import { config } from "src/theme/gluestack-style.config";
 export default function App() {
   const [fontsLoaded] = useFonts({
     Roboto_400Regular,
     Roboto_700Bold,
   });
   return (
-    <StyledProvider config={configThemeCustom}>
-      <GluestackUIStyledProvider config={configThemeCustom}>
-        <StatusBar
-          barStyle="light-content"
-          backgroundColor="transparent"
-          translucent
-        />
-        {fontsLoaded ? <View /> : <Loading />}
-      </GluestackUIStyledProvider>
+    <StyledProvider config={config}>
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
+      {fontsLoaded ? <SignIn /> : <Loading />}
     </StyledProvider>
   );
 }
