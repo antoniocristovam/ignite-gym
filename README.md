@@ -1,1 +1,1 @@
-# ugnite-gym
+# ignite-gym
