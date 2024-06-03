@@ -1,11 +1,10 @@
-import { Center, Spinner, useTheme } from "@gluestack-ui/themed";
+import { Center, Spinner, useTheme } from "native-base";
+
 export function Loading() {
   const theme = useTheme();
-  console.log(theme);
-
   return (
-    <Center flex={1} backgroundColor={"$gray300"}>
-      <Spinner />
+    <Center flex={1} bg={"gray.700"}>
+      <Spinner color={"green.500"} />
     </Center>
   );
 }
