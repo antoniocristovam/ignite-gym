@@ -26,7 +26,8 @@ export function SignIn() {
         <Heading color="gray.100" fontSize={"xl"} mb={6} fontFamily={"heading"}>
           Acesse sua conta
         </Heading>
-        <Input />
+        <Input placeholder="E-mail" />
+        <Input placeholder="Senha" />
       </Center>
     </VStack>
   );
