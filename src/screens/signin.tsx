@@ -33,6 +33,17 @@ export function SignIn() {
         />
         <Input placeholder="Senha" secureTextEntry />
       </Center>
+
+      <Center mt={24}>
+        <Text
+          color={"gray.100"}
+          fontSize={"sm"}
+          marginBottom={3}
+          fontFamily={"body"}
+        >
+          Ainda não tem acesso ?
+        </Text>
+      </Center>
     </VStack>
   );
 }
