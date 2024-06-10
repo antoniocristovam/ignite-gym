@@ -3,11 +3,11 @@ import {
   Roboto_700Bold,
   Roboto_400Regular,
 } from "@expo-google-fonts/roboto";
+import { Routes } from "@routes/index";
 import { StatusBar } from "react-native";
-import { SignIn } from "@screens/signin";
+import { THEME } from "src/theme/style.config";
 import { NativeBaseProvider } from "native-base";
 import { Loading } from "@components/Loading/loading";
-import { THEME } from "src/theme/style.config";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -21,7 +21,7 @@ export default function App() {
         barStyle="light-content"
         backgroundColor="transparent"
       />
-      {fontsLoaded ? <SignIn /> : <Loading />}
+      {fontsLoaded ? <Routes /> : <Loading />}
     </NativeBaseProvider>
   );
 }
