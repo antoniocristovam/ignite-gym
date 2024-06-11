@@ -4,6 +4,7 @@ import { Input } from "@components/input";
 import BackgroundImg from "@assets/background.png";
 
 import { AuthNavigatorRoutesParams } from "@routes/auth.routes";
+
 // NativeBase components
 import { Center, Heading, Image, ScrollView, Text, VStack } from "native-base";
 import { Button } from "@components/button";
@@ -24,6 +25,7 @@ export function SignIn() {
       <VStack flex={1} px={10} pb={10}>
         <Image
           position="absolute"
+          defaultSource={BackgroundImg}
           resizeMode="contain"
           source={BackgroundImg}
           alt="Pessoas treinando"
