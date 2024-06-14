@@ -19,7 +19,7 @@ export function Profile() {
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
-      <ScrollView>
+      <ScrollView _contentContainerStyle={{ paddingBottom: 5 }}>
         <Center mt={6} px={10}>
           {photoIsLoading ? (
             <Skeleton
@@ -52,7 +52,12 @@ export function Profile() {
           <Input isDisabled placeholder="E-mail" bg={"gray.600"} />
         </Center>
         <VStack px={10} mt={12} mb={9}>
-          <Heading color={"gray.200"} fontSize={"md"} mb={2}>
+          <Heading
+            color={"gray.200"}
+            fontSize={"md"}
+            mb={2}
+            alignItems={"self-start"}
+          >
             Alterar senha
           </Heading>
           <Input placeholder="Senha antiga" bg={"gray.600"} secureTextEntry />
