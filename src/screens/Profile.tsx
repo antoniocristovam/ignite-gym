@@ -1,7 +1,9 @@
 import { UserPhoto } from "@components/UserPhoto";
 import { ScreenHeader } from "@components/ScreenHeader";
-import { Center, ScrollView, VStack, Skeleton } from "native-base";
+import { Center, ScrollView, VStack, Skeleton, Text } from "native-base";
 import { useState } from "react";
+import { TouchableOpacity } from "react-native";
+import { Input } from "@components/input";
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
@@ -26,6 +28,20 @@ export function Profile() {
               size={PHOTO_SIZE}
             />
           )}
+
+          <TouchableOpacity>
+            <Text
+              color={"green.500"}
+              fontSize={"md"}
+              mt={2}
+              mb={8}
+              fontWeight={"bold"}
+            >
+              Alterar foto
+            </Text>
+          </TouchableOpacity>
+          <Input placeholder="Nome" bg={"gray.600"} />
+          <Input isDisabled placeholder="E-mail" bg={"gray.600"} />
         </Center>
       </ScrollView>
     </VStack>
