@@ -1,21 +1,60 @@
-import { UserPhoto } from "@components/UserPhoto";
-import { ScreenHeader } from "@components/ScreenHeader";
 import {
-  Center,
-  ScrollView,
-  VStack,
-  Skeleton,
   Text,
+  Center,
+  VStack,
   Heading,
+  Skeleton,
+  ScrollView,
 } from "native-base";
 import { useState } from "react";
-import { TouchableOpacity } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import { Alert, TouchableOpacity } from "react-native";
+import { ScreenHeader } from "@components/ScreenHeader";
+
+// Components
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { UserPhoto } from "@components/UserPhoto";
 
 export function Profile() {
+  // State
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
+  const [userPhoto, setUserPhoto] = useState(
+    "https://github.com/antoniocristovam.png"
+  );
   const PHOTO_SIZE = 33;
+
+  async function handleUserPhotoSelect() {
+    setPhotoIsLoading(true);
+    try {
+      const photoSelected = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 1,
+        aspect: [4, 4],
+        allowsEditing: true,
+      });
+
+      if (photoSelected.canceled) {
+        return;
+      }
+
+      if (photoSelected?.assets?.[0].uri) {
+        if (
+          photoSelected?.assets[0].fileSize &&
+          photoSelected?.assets[0].fileSize / 1024 / 1024 > 5
+        ) {
+          return Alert.alert("A imagem deve ter no máximo 5MB");
+        }
+
+        setUserPhoto(photoSelected?.assets?.[0].uri);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setPhotoIsLoading(false);
+    }
+  }
+
   return (
     <VStack flex={1}>
       <ScreenHeader title="Perfil" />
@@ -31,13 +70,13 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: "https://github.com/antoniocristovam.png" }}
+              source={{ uri: userPhoto }}
               alt="Foto de perfil de Antonio Cristovam"
               size={PHOTO_SIZE}
             />
           )}
 
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleUserPhotoSelect}>
             <Text
               color={"green.500"}
               fontSize={"md"}
