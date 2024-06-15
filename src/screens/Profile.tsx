@@ -5,16 +5,17 @@ import {
   Heading,
   Skeleton,
   ScrollView,
+  useToast,
 } from "native-base";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
-import { Alert, TouchableOpacity } from "react-native";
-import { ScreenHeader } from "@components/ScreenHeader";
+import { TouchableOpacity } from "react-native";
 
 // Components
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { UserPhoto } from "@components/UserPhoto";
+import { ScreenHeader } from "@components/ScreenHeader";
 
 export function Profile() {
   // State
@@ -23,6 +24,8 @@ export function Profile() {
     "https://github.com/antoniocristovam.png"
   );
   const PHOTO_SIZE = 33;
+
+  const toast = useToast();
 
   async function handleUserPhotoSelect() {
     setPhotoIsLoading(true);
@@ -43,10 +46,18 @@ export function Profile() {
           photoSelected?.assets[0].fileSize &&
           photoSelected?.assets[0].fileSize / 1024 / 1024 > 5
         ) {
-          return Alert.alert("A imagem deve ter no máximo 5MB");
+          return toast.show({
+            title: "A imagem deve ter no máximo 5MB",
+            placement: "top",
+            bgColor: "red.500",
+          });
         }
-
         setUserPhoto(photoSelected?.assets?.[0].uri);
+        toast.show({
+          title: "Foto de perfil atualizada com sucesso!",
+          placement: "top",
+          bgColor: "green.500",
+        });
       }
     } catch (error) {
       console.log(error);
