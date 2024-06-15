@@ -7,7 +7,7 @@ import { Routes } from "@routes/index";
 import { StatusBar } from "react-native";
 import { THEME } from "src/theme/style.config";
 import { NativeBaseProvider } from "native-base";
-import { Loading } from "@components/Loading/loading";
+import { Loading } from "@components/Loading";
 
 export default function App() {
   const [fontsLoaded] = useFonts({

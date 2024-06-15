@@ -1,11 +1,11 @@
 // Assets
 import LogoSvg from "@assets/logo.svg";
-import { Input } from "@components/input";
+import { Input } from "@components/Input";
 import BackgroundImg from "@assets/background.png";
 
 // NativeBase components
 import { Center, Heading, Image, ScrollView, Text, VStack } from "native-base";
-import { Button } from "@components/button";
+import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesParams } from "@routes/auth.routes";
 

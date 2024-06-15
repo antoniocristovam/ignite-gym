@@ -10,8 +10,8 @@ import {
 } from "native-base";
 import { useState } from "react";
 import { TouchableOpacity } from "react-native";
-import { Input } from "@components/input";
-import { Button } from "@components/button";
+import { Input } from "@components/Input";
+import { Button } from "@components/Button";
 
 export function Profile() {
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
