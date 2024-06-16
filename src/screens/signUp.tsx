@@ -7,7 +7,6 @@ import BackgroundImg from "@assets/background.png";
 import { Center, Heading, Image, ScrollView, Text, VStack } from "native-base";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
-import { AuthNavigatorRoutesParams } from "@routes/auth.routes";
 
 type FormDataProps = {
   name: string;
