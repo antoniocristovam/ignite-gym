@@ -26,7 +26,7 @@ export function SignUp() {
     navigation.goBack();
   }
 
-  function handleSignU(data: FormDataProps) {
+  function handleSignUp(data: FormDataProps) {
     console.log(data);
   }
 
@@ -102,13 +102,16 @@ export function SignUp() {
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
-                onSubmitEditing={handleSubmit(handleSignU)}
+                onSubmitEditing={handleSubmit(handleSignUp)}
                 returnKeyType="send"
               />
             )}
           />
 
-          <Button title="Criar e acessar" onPress={handleSubmit(handleSignU)} />
+          <Button
+            title="Criar e acessar"
+            onPress={handleSubmit(handleSignUp)}
+          />
         </Center>
 
         <Button
