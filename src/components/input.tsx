@@ -18,6 +18,11 @@ export function Input({ errorMessage = null, isInvalid, ...rest }: Props) {
         bg={"gray.700"}
         borderWidth={0}
         fontSize={"md"}
+        isInvalid={invalid}
+        _invalid={{
+          borderWidth: 1,
+          borderColor: "red.500",
+        }}
         color={"white"}
         fontFamily={"body"}
         placeholderTextColor={"gray.300"}
