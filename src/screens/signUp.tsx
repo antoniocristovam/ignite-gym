@@ -20,7 +20,11 @@ import { useForm, Controller } from "react-hook-form";
 export function SignUp() {
   const navigation = useNavigation();
 
-  const { control, handleSubmit } = useForm<FormDataProps>();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>();
 
   function handleGoBack() {
     navigation.goBack();
@@ -60,9 +64,17 @@ export function SignUp() {
           </Heading>
           <Controller
             control={control}
+            rules={{
+              required: "Nome é obrigatório",
+            }}
             name="name"
             render={({ field: { onChange, value } }) => (
-              <Input placeholder="Nome" onChangeText={onChange} value={value} />
+              <Input
+                placeholder="Nome"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors?.name?.message}
+              />
             )}
           />
 
@@ -76,8 +88,16 @@ export function SignUp() {
                 autoCapitalize="none"
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors?.email?.message}
               />
             )}
+            rules={{
+              required: "E-mail é obrigatório",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: "E-mail inválido",
+              },
+            }}
           />
 
           <Controller
