@@ -1,7 +1,10 @@
-import { HStack, Heading, Text, VStack, Icon } from "native-base";
-import { UserPhoto } from "./UserPhoto";
-import { MaterialIcons } from "@expo/vector-icons";
+// Import
 import { TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
+import { HStack, Heading, Text, VStack, Icon } from "native-base";
+
+// Component
+import { UserPhoto } from "./UserPhoto";
 
 export function HomeHeader() {
   return (
