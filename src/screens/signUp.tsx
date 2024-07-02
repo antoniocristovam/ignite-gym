@@ -1,7 +1,9 @@
 // Assets
 import LogoSvg from "@assets/logo.svg";
 import { Input } from "@components/Input";
+import * as yup from "yup";
 import BackgroundImg from "@assets/background.png";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 // NativeBase components
 import { Center, Heading, Image, ScrollView, Text, VStack } from "native-base";
@@ -12,19 +14,32 @@ type FormDataProps = {
   name: string;
   email: string;
   password: string;
-  password_confirm: string;
+  password_confirm?: string;
 };
 
 import { useForm, Controller } from "react-hook-form";
 
-export function SignUp() {
-  const navigation = useNavigation();
+const signUpSchema = yup.object({
+  name: yup.string().required("Nome é obrigatório."),
+  email: yup
+    .string()
+    .required("E-mail é obrigatório.")
+    .email("E-mail inválido."),
+  password: yup
+    .string()
+    .required("Senha é obrigatória.")
+    .min(6, "Mínimo de 6 caracteres."),
+});
 
+export function SignUp() {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormDataProps>();
+  } = useForm<FormDataProps>({
+    resolver: yupResolver(signUpSchema),
+  });
+  const navigation = useNavigation();
 
   function handleGoBack() {
     navigation.goBack();
@@ -64,9 +79,6 @@ export function SignUp() {
           </Heading>
           <Controller
             control={control}
-            rules={{
-              required: "Nome é obrigatório",
-            }}
             name="name"
             render={({ field: { onChange, value } }) => (
               <Input
@@ -91,13 +103,6 @@ export function SignUp() {
                 errorMessage={errors?.email?.message}
               />
             )}
-            rules={{
-              required: "E-mail é obrigatório",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "E-mail inválido",
-              },
-            }}
           />
 
           <Controller
@@ -109,6 +114,7 @@ export function SignUp() {
                 secureTextEntry
                 onChangeText={onChange}
                 value={value}
+                errorMessage={errors?.password?.message}
               />
             )}
           />
