@@ -14,7 +14,7 @@ type FormDataProps = {
   name: string;
   email: string;
   password: string;
-  password_confirm?: string;
+  password_confirm: string;
 };
 
 import { useForm, Controller } from "react-hook-form";
@@ -29,6 +29,10 @@ const signUpSchema = yup.object({
     .string()
     .required("Senha é obrigatória.")
     .min(6, "Mínimo de 6 caracteres."),
+  password_confirm: yup
+    .string()
+    .required("Confirmação de senha é obrigatória.")
+    .oneOf([yup.ref("password")], "Senhas devem ser iguais."),
 });
 
 export function SignUp() {
@@ -130,6 +134,7 @@ export function SignUp() {
                 value={value}
                 onSubmitEditing={handleSubmit(handleSignUp)}
                 returnKeyType="send"
+                errorMessage={errors?.password_confirm?.message}
               />
             )}
           />
