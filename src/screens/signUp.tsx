@@ -6,9 +6,18 @@ import BackgroundImg from "@assets/background.png";
 import { yupResolver } from "@hookform/resolvers/yup";
 
 // NativeBase components
-import { Center, Heading, Image, ScrollView, Text, VStack } from "native-base";
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  useToast,
+  VStack,
+} from "native-base";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
+import { api } from "@services/api";
 
 type FormDataProps = {
   name: string;
@@ -18,6 +27,9 @@ type FormDataProps = {
 };
 
 import { useForm, Controller } from "react-hook-form";
+import axios from "axios";
+import { Alert } from "react-native";
+import { AppError } from "@utils/AppError";
 
 const signUpSchema = yup.object({
   name: yup.string().required("Nome é obrigatório."),
@@ -36,6 +48,7 @@ const signUpSchema = yup.object({
 });
 
 export function SignUp() {
+  const toast = useToast();
   const {
     control,
     handleSubmit,
@@ -49,8 +62,23 @@ export function SignUp() {
     navigation.goBack();
   }
 
-  function handleSignUp(data: FormDataProps) {
-    console.log(data);
+  async function handleSignUp({ name, email, password }: FormDataProps) {
+    try {
+      const response = await api.post("/users", { name, email, password });
+      console.log(response.data);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+
+      const title = isAppError
+        ? error.message
+        : "Não foi possível criar a conta.";
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
   }
 
   return (
