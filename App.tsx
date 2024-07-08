@@ -5,9 +5,10 @@ import {
 } from "@expo-google-fonts/roboto";
 import { Routes } from "@routes/index";
 import { StatusBar } from "react-native";
+import { Loading } from "@components/Loading";
 import { THEME } from "src/theme/style.config";
 import { NativeBaseProvider } from "native-base";
-import { Loading } from "@components/Loading";
+import { AuthContextProvider } from "@contexts/AuthContext";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -21,7 +22,9 @@ export default function App() {
         barStyle="light-content"
         backgroundColor="transparent"
       />
-      {fontsLoaded ? <Routes /> : <Loading />}
+      <AuthContextProvider>
+        {fontsLoaded ? <Routes /> : <Loading />}
+      </AuthContextProvider>
     </NativeBaseProvider>
   );
 }
