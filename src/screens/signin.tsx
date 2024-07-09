@@ -1,4 +1,5 @@
 // Assets
+import { useState } from "react";
 import LogoSvg from "@assets/logo.svg";
 import { Input } from "@components/Input";
 import BackgroundImg from "@assets/background.png";
@@ -7,13 +8,13 @@ import { AuthNavigatorRoutesParams } from "@routes/auth.routes";
 
 // NativeBase components
 import {
-  Center,
-  Heading,
-  Image,
-  ScrollView,
   Text,
+  Image,
+  Center,
   VStack,
+  Heading,
   useToast,
+  ScrollView,
 } from "native-base";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
@@ -21,15 +22,16 @@ import { Controller, useForm } from "react-hook-form";
 import { useAuth } from "@hooks/useAuth";
 import { AppError } from "@utils/AppError";
 
-export function SignIn() {
-  const { signIn } = useAuth();
-  const toast = useToast();
-  const navigation = useNavigation<AuthNavigatorRoutesParams>();
+type FormData = {
+  email: string;
+  password: string;
+};
 
-  type FormData = {
-    email: string;
-    password: string;
-  };
+export function SignIn() {
+  const toast = useToast();
+  const { signIn } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const navigation = useNavigation<AuthNavigatorRoutesParams>();
 
   const {
     control,
@@ -43,6 +45,7 @@ export function SignIn() {
 
   async function handleSignIn({ email, password }: FormData) {
     try {
+      setLoading(true);
       await signIn(email, password);
     } catch (error) {
       const isAppError = error instanceof AppError;
@@ -53,6 +56,8 @@ export function SignIn() {
         placement: "top",
         bgColor: "red.500",
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -115,7 +120,11 @@ export function SignIn() {
               />
             )}
           />
-          <Button onPress={handleSubmit(handleSignIn)} title="Acessar" />
+          <Button
+            isLoading={loading}
+            onPress={handleSubmit(handleSignIn)}
+            title="Acessar"
+          />
         </Center>
 
         <Center mt={40}>
