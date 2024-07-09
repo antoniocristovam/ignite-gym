@@ -1,7 +1,7 @@
 import { UserDTO } from "@dtos/UserDTO";
 import { api } from "@services/api";
+import { Alert } from "native-base";
 import { createContext, useState } from "react";
-import { Alert } from "react-native";
 
 export type AuthContextDataProps = {
   user: UserDTO;
@@ -26,9 +26,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       if (data.user) {
         setUser(data.user);
       }
-    } catch (error: string | any) {
-      Alert.alert(error.message);
-
+    } catch (error) {
       throw error;
     }
   }
