@@ -7,13 +7,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 // NativeBase components
 import {
+  Text,
   Center,
   Heading,
   Image,
-  ScrollView,
-  Text,
   useToast,
   VStack,
+  ScrollView,
 } from "native-base";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
@@ -27,9 +27,9 @@ type FormDataProps = {
 };
 
 import { useForm, Controller } from "react-hook-form";
-import axios from "axios";
-import { Alert } from "react-native";
 import { AppError } from "@utils/AppError";
+import { useState } from "react";
+import { useAuth } from "@hooks/useAuth";
 
 const signUpSchema = yup.object({
   name: yup.string().required("Nome é obrigatório."),
@@ -48,7 +48,10 @@ const signUpSchema = yup.object({
 });
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false);
+
   const toast = useToast();
+  const { signIn } = useAuth();
   const {
     control,
     handleSubmit,
@@ -64,11 +67,14 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: FormDataProps) {
     try {
-      const response = await api.post("/users", { name, email, password });
-      console.log(response.data);
-    } catch (error) {
-      const isAppError = error instanceof AppError;
+      setIsLoading(true);
 
+      await api.post("/users", { name, email, password });
+      await signIn(email, password);
+    } catch (error) {
+      setIsLoading(false);
+
+      const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
         : "Não foi possível criar a conta.";
@@ -170,6 +176,7 @@ export function SignUp() {
           <Button
             title="Criar e acessar"
             onPress={handleSubmit(handleSignUp)}
+            isLoading={isLoading}
           />
         </Center>
 
