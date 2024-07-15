@@ -14,7 +14,7 @@ export function Home() {
   //States
   const [groups, setGroups] = useState<string[]>([]);
   const [exercicios, setExercicios] = useState<ExerciseDTO[]>([]);
-  const [groupSelected, setGroupSelected] = useState<string>("Costas");
+  const [groupSelected, setGroupSelected] = useState<string>("antebraço");
 
   const [isLoading, setIsLoading] = useState(true);
 

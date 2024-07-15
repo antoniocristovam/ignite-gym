@@ -1,13 +1,13 @@
 import {
-  VStack,
+  Box,
   Text,
   Icon,
+  Image,
+  VStack,
   HStack,
   Heading,
-  Image,
-  Box,
-  ScrollView,
   useToast,
+  ScrollView,
 } from "native-base";
 import { TouchableOpacity } from "react-native";
 import { Feather } from "@expo/vector-icons";
@@ -30,13 +30,15 @@ type RouterParamsProps = {
 
 export function Exercise() {
   const toast = useToast();
+  const router = useRoute();
+
   const navigation = useNavigation<AppNavigatorRoutesProps>();
 
   const [exercise, setExercise] = useState<ExerciseDTO>({} as ExerciseDTO);
 
   const [isLoading, setIsLoading] = useState(true);
+  const [sendingRegister, setSendingRegister] = useState(false);
 
-  const router = useRoute();
   const { exerciseId } = router.params as RouterParamsProps;
 
   function handleGoBack() {
@@ -63,7 +65,33 @@ export function Exercise() {
     }
   }
 
-  console.log(exercise);
+  async function handleExerciseHistoryRegister() {
+    try {
+      await api.post(`/history/`, { exercise_id: exerciseId });
+
+      toast.show({
+        title: "Parabéns! Exercício registrado com sucesso.",
+        placement: "top",
+        bgColor: "green.700",
+      });
+
+      navigation.navigate("history");
+
+      setSendingRegister(true);
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível registrar o exercício.";
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setSendingRegister(false);
+    }
+  }
 
   useEffect(() => {
     fetchExerciseDetails();
@@ -135,7 +163,11 @@ export function Exercise() {
                   </Text>
                 </HStack>
               </HStack>
-              <Button title="Marcar como realizado" />
+              <Button
+                title="Marcar como realizado"
+                isLoading={sendingRegister}
+                onPress={handleExerciseHistoryRegister}
+              />
             </Box>
           </VStack>
         )}
