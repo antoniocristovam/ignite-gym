@@ -18,21 +18,45 @@ import { UserPhoto } from "@components/UserPhoto";
 import { ScreenHeader } from "@components/ScreenHeader";
 import { Controller, useForm } from "react-hook-form";
 import { useAuth } from "@hooks/useAuth";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { api } from "@services/api";
+import { AppError } from "@utils/AppError";
 
 export function Profile() {
   type FormDataProps = {
     name: string;
-    email: string;
-    old_password: string;
-    confirm_password: string;
-    password: string;
+    email?: string;
+    old_password?: string;
+    confirm_password?: string | null;
+    password?: string | null;
   };
 
-  const { user } = useAuth();
-  console.log(user);
+  const profileSchema = yup.object().shape({
+    name: yup.string().required("Nome é obrigatório."),
+    password: yup
+      .string()
+      .min(6, "Mínimo de 6 caracteres.")
+      .nullable()
+      .transform((value) => (!!value ? value : null)),
+    confirm_password: yup
+      .string()
+      .nullable()
+      .transform((value) => (!!value ? value : null))
+      .oneOf([yup.ref("password")], "Senhas devem ser iguais.")
+      .when("password", {
+        is: (Field: any) => Field,
+        then: (schema) =>
+          schema.required("Confirmação de senha é obrigatória."),
+      })
+      .transform((value) => (!!value ? value : null)),
+  });
+
+  const { user, updateUserProfile } = useAuth();
 
   // State
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [userPhoto, setUserPhoto] = useState(
     "https://github.com/antoniocristovam.png"
   );
@@ -40,15 +64,46 @@ export function Profile() {
 
   const toast = useToast();
 
-  const { control, handleSubmit } = useForm<FormDataProps>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataProps>({
     defaultValues: {
       name: user?.name,
       email: user?.email,
     },
+    resolver: yupResolver(profileSchema),
   });
 
   async function handleProfileUpdate(data: FormDataProps) {
-    console.log(data);
+    try {
+      setIsLoading(true);
+
+      const userUpdated = user;
+      userUpdated.name = data.name;
+
+      await api.put("/users", data);
+      await updateUserProfile(userUpdated);
+      toast.show({
+        title: "Perfil atualizado com sucesso!",
+        placement: "top",
+        bgColor: "green.500",
+      });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "Não foi possível atualizar o perfil.";
+
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   async function handleUserPhotoSelect() {
@@ -131,6 +186,7 @@ export function Profile() {
                 bg={"gray.600"}
                 value={value}
                 onChangeText={onChange}
+                errorMessage={errors?.name?.message}
               />
             )}
           />
@@ -139,7 +195,7 @@ export function Profile() {
             name="email"
             render={({ field: { value, onChange } }) => (
               <Input
-                isDisabled
+                isDisabled={true}
                 placeholder="E-mail"
                 bg={"gray.600"}
                 onChangeText={onChange}
@@ -181,6 +237,7 @@ export function Profile() {
                 bg={"gray.600"}
                 secureTextEntry
                 onChangeText={onChange}
+                errorMessage={errors?.password?.message}
               />
             )}
           />
@@ -194,6 +251,7 @@ export function Profile() {
                 bg={"gray.600"}
                 secureTextEntry
                 onChangeText={onChange}
+                errorMessage={errors?.confirm_password?.message}
               />
             )}
           />
@@ -202,6 +260,7 @@ export function Profile() {
             title="Atualizar"
             mt={4}
             onPress={handleSubmit(handleProfileUpdate)}
+            isLoading={isLoading}
           />
         </VStack>
       </ScrollView>
