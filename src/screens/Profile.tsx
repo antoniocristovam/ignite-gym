@@ -131,7 +131,17 @@ export function Profile() {
             bgColor: "red.500",
           });
         }
-        setUserPhoto(photoSelected?.assets?.[0].uri);
+
+        const fileExtension = photoSelected?.assets?.[0].uri.split(".").pop();
+
+        const photoFile = {
+          name: `${user.name}.${fileExtension}`.toLowerCase(),
+          url: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].mimeType}/${fileExtension}`,
+        };
+
+        console.log(photoFile);
+
         toast.show({
           title: "Foto de perfil atualizada com sucesso!",
           placement: "top",
