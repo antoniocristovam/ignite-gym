@@ -3,9 +3,9 @@ import {
   Center,
   VStack,
   Heading,
+  useToast,
   Skeleton,
   ScrollView,
-  useToast,
 } from "native-base";
 import { useState } from "react";
 import * as ImagePicker from "expo-image-picker";
@@ -22,6 +22,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { api } from "@services/api";
 import { AppError } from "@utils/AppError";
+import defaultUserImage from "@assets/userPhotoDefault.png";
 
 export function Profile() {
   type FormDataProps = {
@@ -57,9 +58,6 @@ export function Profile() {
   // State
   const [photoIsLoading, setPhotoIsLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [userPhoto, setUserPhoto] = useState(
-    "https://github.com/antoniocristovam.png"
-  );
   const PHOTO_SIZE = 33;
 
   const toast = useToast();
@@ -136,11 +134,26 @@ export function Profile() {
 
         const photoFile = {
           name: `${user.name}.${fileExtension}`.toLowerCase(),
-          url: photoSelected.assets[0].uri,
-          type: `${photoSelected.assets[0].mimeType}/${fileExtension}`,
-        };
+          uri: photoSelected.assets[0].uri,
+          type: `${photoSelected.assets[0].type}/${fileExtension}`,
+        } as any;
 
-        console.log(photoFile);
+        const userPhotoUploadingForm = new FormData();
+        userPhotoUploadingForm.append("avatar", photoFile);
+
+        const avatarUpdateResponse = await api.patch(
+          "/users/avatar",
+          userPhotoUploadingForm,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        const userUpdate = user;
+        userUpdate.avatar = avatarUpdateResponse.data.avatar;
+        updateUserProfile(userUpdate);
 
         toast.show({
           title: "Foto de perfil atualizada com sucesso!",
@@ -170,7 +183,11 @@ export function Profile() {
             />
           ) : (
             <UserPhoto
-              source={{ uri: userPhoto }}
+              source={
+                user.avatar
+                  ? { uri: `${api.defaults.baseURL}/avatar/${user.avatar}` }
+                  : defaultUserImage
+              }
               alt="Foto de perfil de Antonio Cristovam"
               size={PHOTO_SIZE}
             />
